@@ -1,6 +1,7 @@
 services:
   - type: web
-    name: telegram-btc-bot
+    name: btc-payment-bot
     env: python
-    buildCommand: ""
+    plan: free
+    buildCommand: pip install -r requirements.txt
     startCommand: python bot.py

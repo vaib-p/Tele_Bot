@@ -22,13 +22,15 @@ logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 def convert_usd_to_btc(usd_amount):
     try:
-        response = requests.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd")
+        response = requests.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd", timeout=10)
+        response.raise_for_status()  # Raises error for bad response
         btc_price = response.json()["bitcoin"]["usd"]
         btc_amount = round(usd_amount / btc_price, 8)
         return btc_amount, btc_price
-    except Exception as e:
-        print("Error fetching BTC price:", e)
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Error fetching BTC price: {e}")
         return None, None
+
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = str(update.effective_user.id)
